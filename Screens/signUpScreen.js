@@ -12,12 +12,12 @@ import {
   SafeAreaView,
 } from "react-native";
 import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { ALERT_TYPE, Dialog, AlertNotificationRoot, Toast } from 'react-native-alert-notification';
 import Input from "../Components/Input";
 import Loader from "../Components/Loader";
-const SignUpScreen = () => {
+
+function SignupScreen({ navigation }) {
   // const [text, onChangeText] = React.useState('');
   // const [number, onChangeNumber] = React.useState('');
 
@@ -30,12 +30,6 @@ const SignUpScreen = () => {
 
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
-
-  const navigation = useNavigation();
-
-  const signIn = () => {
-    navigation.navigate("Login");
-  };
 
   const handleOnChange = (text, input) => {
     setInputs((prevState) => ({ ...prevState, [input]: text }));
@@ -157,7 +151,7 @@ const SignUpScreen = () => {
         </TouchableOpacity>
         <View style={styles.loginContainer}>
           <Text style={styles.loginText}>Already have an account?</Text>
-          <TouchableOpacity onPress={signIn}>
+          <TouchableOpacity onPress={() => navigation.navigate('Login')}>
             <Text style={styles.loginButtonText}>Sign In</Text>
           </TouchableOpacity>
         </View>
@@ -228,4 +222,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SignUpScreen;
+export default SignupScreen;

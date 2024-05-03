@@ -10,7 +10,6 @@ import {
   Dimensions,
 } from "react-native";
 import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
 import Input from "../Components/Input";
 import Loader from "../Components/Loader";
 import { ALERT_TYPE, Dialog, AlertNotificationRoot, Toast } from 'react-native-alert-notification';
@@ -18,8 +17,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 
-const LoginScreen = () => {
-  const navigation = useNavigation();
+function LoginScreen({ navigation }) {
 
   const [inputs, setInputs] = useState({
     email: "",
@@ -30,7 +28,7 @@ const LoginScreen = () => {
   const [loading, setLoading] = useState(false);
 
   const signUp = () => {
-    navigation.navigate("signUp");
+    navigation.navigate("Signup");
   };
 
   const handleOnChange = (text, input) => {

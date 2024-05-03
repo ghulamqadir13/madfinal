@@ -1,4 +1,6 @@
-import React from "react";
+// WelcomeScreen.js
+import React from 'react';
+
 import {
   View,
   Text,
@@ -6,15 +8,9 @@ import {
   StyleSheet,
   TouchableOpacity,
 } from "react-native";
-import { useNavigation } from "@react-navigation/native";
 
-export default function WelcomeScreen() {
-  const navigation = useNavigation();
 
-  const onPressNavigation = () => {
-    navigation.navigate("Login");
-  };
-
+const WelcomeScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <View style={styles.headerTitleContainer}>
@@ -23,7 +19,7 @@ export default function WelcomeScreen() {
       <View style={styles.Imagecontainer}>
         <Image
           style={styles.tinyLogo}
-          source={require("../assets/logo/lmage1.jpeg")}
+          source={require("../assets/logo/lmage1.png")}
         />
       </View>
       <View style={styles.TitleContainer}>
@@ -48,14 +44,13 @@ export default function WelcomeScreen() {
       </View>
 
       <View style={styles.Buttoncontainer}>
-        <TouchableOpacity style={styles.button} onPress={onPressNavigation}>
+        <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('Login')}>
           <Text style={styles.buttonText}>Get Started</Text>
         </TouchableOpacity>
       </View>
     </View>
   );
-}
-
+};
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -136,3 +131,4 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
+export default WelcomeScreen;
