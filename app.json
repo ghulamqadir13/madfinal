@@ -25,6 +25,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "fonts": [
+      {
+        "Arabic-full": "./assets/scheherazade/ScheherazadeRegOT.ttf"
+      }
+    ]
   }
 }
+

@@ -3,8 +3,9 @@ import { FlatList, Text, View, StyleSheet, TouchableOpacity } from 'react-native
 import axios from 'axios';
 import * as Location from 'expo-location';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-const App = () => {
+const TimingScreen = () => {
   const [todayPrayerTimes, setTodayPrayerTimes] = useState(null);
   const [islamicDate, setIslamicDate] = useState(null);
   const [selectedPrayer, setSelectedPrayer] = useState(null);
@@ -15,35 +16,52 @@ const App = () => {
 
   const fetchLocationAndPrayerTimes = async () => {
     try {
+      // Get the last update date from AsyncStorage
+      const lastUpdateDate = await AsyncStorage.getItem('lastUpdateDate');
+      const storedData = await AsyncStorage.getItem('prayerData');
+  
+      if (lastUpdateDate) {
+        const today = new Date().toISOString().split('T')[0];
+        if (today === lastUpdateDate) {
+          console.log('Prayer times are up to date. Retrieving from AsyncStorage...');
+          if (storedData) {
+            const { todayPrayerTimes, islamicDate } = JSON.parse(storedData);
+            setTodayPrayerTimes(todayPrayerTimes);
+            setIslamicDate(islamicDate);
+            return;
+          }
+        }
+      }
+  
       // Request permission to access device location
       let { status } = await Location.requestForegroundPermissionsAsync();
       if (status !== 'granted') {
         console.error('Permission to access location was denied');
         return;
       }
-
+  
       // Get current location
       let location = await Location.getCurrentPositionAsync({});
       const { latitude, longitude } = location.coords;
-
+  
       // Get current month and year
       const now = new Date();
       const currentMonth = now.getMonth() + 1; // January is 0
       const currentYear = now.getFullYear();
-
+  
       // Fetch prayer times using current location, month, and year
       const response = await axios.get(
         `http://api.aladhan.com/v1/calendar/${currentYear}/${currentMonth}?latitude=${latitude}&longitude=${longitude}&method=2`
       );
       const data = response.data.data;
-
+  
       // Filter the data to get today's prayer times
       const today = now.getDate();
       const todayData = data.find((item) => {
         const date = new Date(item.date.timestamp * 1000).getDate();
         return date === today;
       });
-
+  
       // Remove unnecessary prayer times
       const { timings, date } = todayData;
       delete timings.Sunrise;
@@ -52,13 +70,18 @@ const App = () => {
       delete timings.Midnight;
       delete timings.Firstthird;
       delete timings.Lastthird;
-
+  
       setTodayPrayerTimes({ timings, date });
       setIslamicDate(date.hijri);
+  
+      // Store prayer data and update the last update date in AsyncStorage
+      await AsyncStorage.setItem('prayerData', JSON.stringify({ todayPrayerTimes, islamicDate }));
+      await AsyncStorage.setItem('lastUpdateDate', new Date().toISOString().split('T')[0]);
     } catch (error) {
       console.error('Error fetching prayer times:', error);
     }
   };
+  
 
   const handlePrayerPress = (prayerName, prayerTime) => {
     setSelectedPrayer({ name: prayerName, time: prayerTime });
@@ -125,15 +148,11 @@ const App = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    // flexDirection: 'row',
     justifyContent: 'center',
-    // alignItems: 'center',
     backgroundColor: 'yellow',
     padding: 20,
   },
   card: {
-    // flex: 1,
-    // flexDirection: 'row',
     backgroundColor: '#fff',
     borderRadius: 10,
     paddingBottom: 10,
@@ -149,7 +168,6 @@ const styles = StyleSheet.create({
     marginBottom: 20,
   },
   dateContainer: {
-    // flex: 0.4,
     alignItems: 'center',
   },
   date: {
@@ -161,7 +179,6 @@ const styles = StyleSheet.create({
   islamicDate: {
     fontSize: 16,
     color: '#666',
-    // marginBottom: 20,
   },
   prayerItem: {
     alignItems: 'center',
@@ -178,15 +195,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
     elevation: 5,
-    height: 100, // Reduced height of TouchableOpacity
-    width: 100, // Reduced width of TouchableOpacity
+    height: 100,
+    width: 100,
   },
   iconContainer: {
     marginBottom: 5,
   },
   prayerTime: {
-    fontSize: 14,
-    fontWeight: 'bold',
+    // Define styles for prayerTime here
   },
   prayerName: {
     fontSize: 12,
@@ -210,4 +226,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default App;
+export default TimingScreen;

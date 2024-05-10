@@ -11,7 +11,7 @@ import { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Entypo } from "@expo/vector-icons";
 // import { ScrollView } from "react-native-gesture-handler";
-import MovieList from "./MovieList";
+import TimingScreen from "./MovieList";
 
 function HomeScreen({ navigation }) {
   const [userDetails, setUserDetails] = useState();
@@ -56,7 +56,7 @@ function HomeScreen({ navigation }) {
         </View>
         <View style={{flex:1,backgroundColor:'gray'}}>
           <View style={styles.timerContainer}>
-          <MovieList />
+          <TimingScreen />
           </View>
           
         </View>
@@ -200,6 +200,8 @@ const styles = StyleSheet.create({
     alignItems: "flex-start",
     justifyContent: "flex-start",
     flex: 1,
+    marginLeft: "45%",
+    marginTop: "-12%",
   },
   icon: {
     position: "absolute",

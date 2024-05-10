@@ -1,12 +1,12 @@
 import { View, Text } from 'react-native'
 import React from 'react'
 
-const IbadatScreen = () => {
+const Ibadat = () => {
   return (
     <View>
-      <Text>SettingScreen</Text>
+      <Text>Ibadat</Text>
     </View>
   )
 }
 
-export default IbadatScreen
+export default Ibadat

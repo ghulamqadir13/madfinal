@@ -14,6 +14,8 @@ import IbadatScreen from './Screens/Ibadat';
 import HadithScreen from './Screens/Hadith';
 import QuranScreen from './Screens/Quran';
 import PrayerTimingsScreen from './Screens/PrayerTiming';
+import AyahsScreen from './Screens/AyahsScreen';
+
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -28,6 +30,7 @@ function App() {
         <Stack.Screen name="Signup" component={SignupScreen} />
         <Stack.Screen name="Home" component={HomeDrawer} />
         <Stack.Screen name="PrayersTiming" component={PrayerTimingsScreen} />
+        <Stack.Screen name="AyahsScreen" component={AyahsScreen} />
       </Stack.Navigator>
     </NavigationContainer>
   );
