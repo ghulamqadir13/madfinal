@@ -1,24 +1,27 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, FlatList, TouchableOpacity } from "react-native";
 
-const LanguagesScreen = ({ route }) => {
+const LanguagesScreen = ({ route, navigation }) => {
   const { editionName } = route.params;
   const [languages, setLanguages] = useState([]);
 
   useEffect(() => {
-    fetch(`https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions.json`)
+    fetch('https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions.json')
       .then((response) => response.json())
       .then((data) => {
         // Find the edition object corresponding to the selected edition name
         const edition = Object.values(data).find(
           (item) => item.name === editionName
         );
-        // Extract language names from the collection of the selected edition
-        const langArray = edition.collection.map((item) => item.language);
-        setLanguages(langArray);
+        setLanguages(edition.collection);
       })
       .catch((error) => console.error("Error fetching data:", error));
   }, [editionName]);
+
+  const handleLanguagePress = (link) => {
+    // Navigate to the NextScreen passing the link as a route parameter
+    navigation.navigate("SectionsScreen", { link });
+  };
 
   return (
     <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
@@ -27,17 +30,12 @@ const LanguagesScreen = ({ route }) => {
       </Text>
       <FlatList
         data={languages}
-        renderItem={({ item, index }) => (
-          <TouchableOpacity onPress={() => {/* handle onPress event */}}>
-            <Text
-              key={`${item}-${index}`}
-              style={{ fontSize: 16, marginBottom: 5 }}
-            >
-              {item}
-            </Text>
+        renderItem={({ item }) => (
+          <TouchableOpacity onPress={() => handleLanguagePress(item.link)}>
+            <Text style={{ fontSize: 16, marginBottom: 5 }}>{item.language}</Text>
           </TouchableOpacity>
         )}
-        keyExtractor={(item, index) => `${item}-${index}`}
+        keyExtractor={(item) => item.name}
       />
     </View>
   );

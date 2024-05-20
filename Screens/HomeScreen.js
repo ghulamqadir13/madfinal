@@ -5,13 +5,17 @@ import {
   TouchableOpacity,
   SafeAreaView,
   Image,
+  ScrollView,
 } from "react-native";
-import React from "react";
+import React, { useEffect } from "react";
 import { useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Entypo } from "@expo/vector-icons";
 // import { ScrollView } from "react-native-gesture-handler";
 import TimingScreen from "./MovieList";
+import HadithDisplay from "./HadithShow";
+
+// import { ScrollView } from "react-native-gesture-handler";
 
 function HomeScreen({ navigation }) {
   const [userDetails, setUserDetails] = useState();
@@ -19,10 +23,6 @@ function HomeScreen({ navigation }) {
   React.useEffect(() => {
     getUserData();
   }, []);
-
-  // const logout = () => {
-  //   navigation.navigate('Login')
-  // }
 
   const getUserData = async () => {
     const userData = await AsyncStorage.getItem("userData");
@@ -32,8 +32,15 @@ function HomeScreen({ navigation }) {
       setUserDetails(JSON.parse(userData));
     }
   };
+  const onPressHajj = () => {
+    // Navigate to a new screen passing the edition name as a parameter
+    navigation.navigate('HajjScreen');
+  };
+  const onPressUmrah = () => {
+    // Navigate to a new screen passing the edition name as a parameter
+    navigation.navigate('UmrahScreen');
+  };
   return (
-    
     <SafeAreaView style={styles.container}>
       {/* <View style={styles.container}> */}
       <View style={styles.topContainer}>
@@ -54,11 +61,10 @@ function HomeScreen({ navigation }) {
             </TouchableOpacity>
           </View>
         </View>
-        <View style={{flex:1,backgroundColor:'gray'}}>
+        <View style={{ flex: 1, backgroundColor: "gray" }}>
           <View style={styles.timerContainer}>
-          <TimingScreen />
+            <TimingScreen />
           </View>
-          
         </View>
       </View>
       <View style={styles.bottomContainer}>
@@ -69,16 +75,21 @@ function HomeScreen({ navigation }) {
           <View style={styles.HadithContainer}>
             <Text>Hadiths</Text>
           </View> */}
-          <View>
-            <Text>Hadith of the Day</Text>
-          </View>
+          <ScrollView style={styles.HadithDisplayContainer}>
+            <HadithDisplay />
+          </ScrollView>
         </View>
         <View style={styles.TafseerTranslationContainer}>
           <View style={styles.TafseerContainer}>
-            <Text>Umrah Guidance</Text>
+          <TouchableOpacity onPress={() => onPressUmrah()}>
+          <Text>Umrah Guidance</Text>
+            </TouchableOpacity>
+            
           </View>
           <View style={styles.TranslationContainer}>
-            <Text>Hajj Guidance</Text>
+            <TouchableOpacity onPress={() => onPressHajj()}>
+              <Text>Hajj Guidance</Text>
+            </TouchableOpacity>
           </View>
         </View>
       </View>
@@ -182,6 +193,15 @@ const styles = StyleSheet.create({
     backgroundColor: "pink",
     marginHorizontal: "3%",
     marginVertical: "8%",
+    borderWidth: 2, // Add border width
+    borderColor: "black", // Add border color
+    borderRadius: 10, // Add border radius
+  },
+  HadithDisplayContainer: {
+    flex: 1,
+    backgroundColor: "#F0F0F0",
+    marginHorizontal: "2%",
+    marginVertical: "3%",
     borderWidth: 2, // Add border width
     borderColor: "black", // Add border color
     borderRadius: 10, // Add border radius

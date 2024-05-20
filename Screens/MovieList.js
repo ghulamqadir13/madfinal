@@ -75,12 +75,13 @@ const TimingScreen = () => {
       setIslamicDate(date.hijri);
   
       // Store prayer data and update the last update date in AsyncStorage
-      await AsyncStorage.setItem('prayerData', JSON.stringify({ todayPrayerTimes, islamicDate }));
+      await AsyncStorage.setItem('prayerData', JSON.stringify({ todayPrayerTimes: { timings, date }, islamicDate: date.hijri }));
       await AsyncStorage.setItem('lastUpdateDate', new Date().toISOString().split('T')[0]);
     } catch (error) {
       console.error('Error fetching prayer times:', error);
     }
   };
+  
   
 
   const handlePrayerPress = (prayerName, prayerTime) => {

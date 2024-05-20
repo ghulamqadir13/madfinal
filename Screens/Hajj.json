@@ -1,0 +1,76 @@
+ [
+      {
+        "step_number": 1,
+        "title": "Ihram",
+        "description": "The pilgrim enters into the state of Ihram by performing the intention and wearing the prescribed garments.",
+        "video_url": "https://www.youtube.com/watch?v=VIDEO_ID_Ihram"
+      },
+      {
+        "step_number": 2,
+        "title": "Tawaf",
+        "description": "Perform Tawaf around the Kaaba seven times, beginning and ending at the Black Stone.",
+        "video_url": "https://www.youtube.com/watch?v=VIDEO_ID_Tawaf"
+      },
+      {
+        "step_number": 3,
+        "title": "Sa'i",
+        "description": "Perform Sa'i by walking seven times between the hills of Safa and Marwa.",
+        "video_url": "https://www.youtube.com/watch?v=VIDEO_ID_Sai"
+      },
+      {
+        "step_number": 4,
+        "title": "Mina",
+        "description": "Head to Mina and stay overnight.",
+        "video_url": "https://www.youtube.com/watch?v=VIDEO_ID_Mina"
+      },
+      {
+        "step_number": 5,
+        "title": "Arafat",
+        "description": "Head to Arafat and stand in vigil, engaging in prayer and reflection.",
+        "video_url": "https://www.youtube.com/watch?v=VIDEO_ID_Arafat"
+      },
+      {
+        "step_number": 6,
+        "title": "Muzdalifah",
+        "description": "After sunset, head to Muzdalifah and spend the night there.",
+        "video_url": "https://www.youtube.com/watch?v=VIDEO_ID_Muzdalifah"
+      },
+      {
+        "step_number": 7,
+        "title": "Ramy",
+        "description": "Stone the three pillars at Mina (Jamarat) representing Satan.",
+        "video_url": "https://www.youtube.com/watch?v=VIDEO_ID_Ramy"
+      },
+      {
+        "step_number": 8,
+        "title": "Animal Sacrifice",
+        "description": "Perform the ritual sacrifice of an animal in commemoration of Prophet Ibrahim's willingness to sacrifice his son.",
+        "video_url": "https://www.youtube.com/watch?v=VIDEO_ID_Animal_Sacrifice"
+      },
+      {
+        "step_number": 9,
+        "title": "Halq or Taqsir",
+        "description": "Shave the head (Halq) or trim the hair (Taqsir) to symbolize the renewal of the pilgrim's life.",
+        "video_url": "https://www.youtube.com/watch?v=VIDEO_ID_Halq_Taqsir"
+      },
+      {
+        "step_number": 10,
+        "title": "Tawaf al-Ifadah",
+        "description": "Perform Tawaf al-Ifadah, a shorter Tawaf, to signify the completion of Hajj rituals.",
+        "video_url": "https://www.youtube.com/watch?v=VIDEO_ID_Tawaf_al_Ifadah"
+      },
+      {
+        "step_number": 11,
+        "title": "Sa'i of Hajj",
+        "description": "Perform Sa'i of Hajj by walking seven times between Safa and Marwa.",
+        "video_url": "https://www.youtube.com/watch?v=VIDEO_ID_Sai_of_Hajj"
+      },
+      {
+        "step_number": 12,
+        "title": "Farewell Tawaf",
+        "description": "Perform a final Tawaf around the Kaaba as a farewell.",
+        "video_url": "https://www.youtube.com/watch?v=VIDEO_ID_Farewell_Tawaf"
+      }
+    ]
+  
+  

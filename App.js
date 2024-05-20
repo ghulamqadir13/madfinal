@@ -17,7 +17,12 @@ import PrayerTimingsScreen from './Screens/PrayerTiming';
 import AyahsScreen from './Screens/AyahsScreen';
 import LanguagesScreen from './Screens/Languages';
 //import HadithDataScreen from './Screens/HadithData';
-import NextScreen from './Screens/SectionsScreen';
+//import NextScreen from './Screens/SectionsScreen';
+import SectionsScreen from './Screens/SectionsScreen';
+import HajjScreen from './Screens/Hajj';
+import UmrahScreen from './Screens/Umra';
+import PrayersScreen from './Screens/Prayers';
+import FastingScreen from './Screens/Fasting';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -34,7 +39,12 @@ function App() {
         <Stack.Screen name="PrayersTiming" component={PrayerTimingsScreen} />
         <Stack.Screen name="AyahsScreen" component={AyahsScreen} />
         <Stack.Screen name="LanguagesScreen" component={LanguagesScreen} />
-        <Stack.Screen name="NextScreen" component={NextScreen} />
+        <Stack.Screen name="SectionsScreen" component={SectionsScreen} />
+        <Stack.Screen name="HajjScreen" component={HajjScreen} />
+        <Stack.Screen name="UmrahScreen" component={UmrahScreen} />
+        <Stack.Screen name="PrayersScreen" component={PrayersScreen} />
+        <Stack.Screen name="FastingScreen" component={FastingScreen} />
+
 
       </Stack.Navigator>
     </NavigationContainer>

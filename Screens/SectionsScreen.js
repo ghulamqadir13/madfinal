@@ -1,17 +1,21 @@
-// NextScreen.js
-
 import React, { useState, useEffect } from "react";
-import { View, Text, ActivityIndicator, FlatList } from "react-native";
+import { View, Text, ActivityIndicator, FlatList, SectionList } from "react-native";
 
-const NextScreen = ({ route }) => {
+const SectionsScreen = ({ route }) => {
   const { link } = route.params;
   const [hadiths, setHadiths] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     fetch(link)
-      .then((response) => response.json())
+      .then((response) => {
+        // Log the response before trying to parse it
+        // console.log("Response from server:", response);
+        return response.json();
+      })
       .then((data) => {
+        // Log the parsed data to check if it's valid JSON
+        // console.log("Parsed data:", data);
         setHadiths(data.hadiths);
         setLoading(false);
       })
@@ -55,4 +59,4 @@ const NextScreen = ({ route }) => {
   );
 };
 
-export default NextScreen;
+export default SectionsScreen;

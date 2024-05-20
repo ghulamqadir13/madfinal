@@ -1,9 +1,44 @@
-import React from 'react';
-import { View, Text, ScrollView, Dimensions } from 'react-native';
+import React, { useState, useEffect, useRef } from 'react';
+import { View, Text, ScrollView, Dimensions, Button, Alert } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 const AyahsScreen = ({ navigation, route }) => {
   const { surah } = route.params;
   const screenWidth = Dimensions.get('window').width;
+  const scrollViewRef = useRef();
+  const [bookmarkedPage, setBookmarkedPage] = useState(null);
+
+  useEffect(() => {
+    const getBookmarkedPage = async () => {
+      try {
+        const page = await AsyncStorage.getItem(`bookmark_${surah.number}`);
+        if (page !== null) {
+          setBookmarkedPage(parseInt(page, 10));
+        }
+      } catch (error) {
+        console.error('Error retrieving bookmarked page:', error);
+      }
+    };
+
+    getBookmarkedPage();
+  }, [surah.number]);
+
+  const saveBookmark = async (pageNumber) => {
+    try {
+      await AsyncStorage.setItem(`bookmark_${surah.number}`, pageNumber.toString());
+      Alert.alert('Bookmark Saved', `Page ${pageNumber} has been bookmarked.`);
+    } catch (error) {
+      console.error('Error saving bookmark:', error);
+    }
+  };
+
+  const goToBookmarkedPage = () => {
+    if (bookmarkedPage !== null && scrollViewRef.current) {
+      scrollViewRef.current.scrollTo({ x: screenWidth * (bookmarkedPage - 1), animated: true });
+    } else {
+      Alert.alert('No Bookmark', 'There is no bookmarked page for this Surah.');
+    }
+  };
 
   const renderPage = (pageData, pageNumber) => (
     <View key={pageNumber} style={{ width: screenWidth, padding: 20 }}>
@@ -20,6 +55,7 @@ const AyahsScreen = ({ navigation, route }) => {
           )}
         </View>
       ))}
+      <Button title="Bookmark this Page" onPress={() => saveBookmark(pageNumber)} />
     </View>
   );
 
@@ -52,14 +88,18 @@ const AyahsScreen = ({ navigation, route }) => {
   };
 
   return (
-    <ScrollView
-      horizontal
-      pagingEnabled
-      showsHorizontalScrollIndicator={false}
-      style={{ flex: 1 }}
-    >
-      {renderPages()}
-    </ScrollView>
+    <View style={{ flex: 1 }}>
+      <Button title="Go to Bookmarked Page" onPress={goToBookmarkedPage} />
+      <ScrollView
+        ref={scrollViewRef}
+        horizontal
+        pagingEnabled
+        showsHorizontalScrollIndicator={false}
+        style={{ flex: 1 }}
+      >
+        {renderPages()}
+      </ScrollView>
+    </View>
   );
 };
 
