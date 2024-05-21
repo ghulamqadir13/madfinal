@@ -4,144 +4,68 @@ import {
   View,
   Text,
   StyleSheet,
-  Image,
-  TextInput,
+  Alert,
   TouchableOpacity,
-  Dimensions,
 } from "react-native";
 import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 import Input from "../Components/Input";
 import Loader from "../Components/Loader";
 import { ALERT_TYPE, Dialog, AlertNotificationRoot, Toast } from 'react-native-alert-notification';
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { SafeAreaView } from "react-native-safe-area-context";
-
+import { auth } from './Firebase';
+import { signInWithEmailAndPassword } from 'firebase/auth';
 
 function LoginScreen({ navigation }) {
-
-  const [inputs, setInputs] = useState({
-    email: "",
-    password: "",
-  })
-
-  const [errors, setErrors] = useState({});
-  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
 
   const signUp = () => {
     navigation.navigate("Signup");
   };
 
-  const handleOnChange = (text, input) => {
-    setInputs((prevState) => ({ ...prevState, [input]: text }));
-  }
-
-  const handleError = (errorMessage, input) => {
-    setErrors((prevState) => ({ ...prevState, [input]: errorMessage }));
-  }
-
-  const validate = async () => {
-    let isValid = true;
-
-    if (!inputs.email) {
-      handleError("Please enter a email", "email");
-      isValid = false;
-    } else if (!inputs.email.match(/\S+@\S+\.\S+/)) {
-      handleError("Please enter a valid email", "email");
-      isValid = false;
+  const handleLogin = async () => {
+    try {
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      navigation.navigate("Home");
+      const user = userCredential.user;
+      console.log('User Login', user.email);
+    } catch (error) {
+      const errorMessage = error.message;
+      console.log('Error', errorMessage);
+      Alert.alert('Login Error', errorMessage);
     }
-
-    if (!inputs.password) {
-      handleError("Please enter a password", "password");
-      isValid = false;
-    } else if (inputs.password.length < 6) {
-      handleError("Password must be at least 6 characters", "password");
-      isValid = false;
-    }
-
-    if (isValid) {
-      handleSignIn();
-    } else if (!isValid) {
-      console.log("Invalid");
-    }
-  }
-
-  const handleSignIn = () => {
-    console.log("Login: ");
-    console.log(inputs);
-
-    setLoading(true);
-    setTimeout(async () => {
-      try {
-        setLoading(false);
-        let userData = await AsyncStorage.getItem("userData");
-
-        if (userData) {
-          userData = JSON.parse(userData);
-          console.log("userData: ", userData);
-
-          if (userData.email === inputs.email && userData.password === inputs.password) {
-            navigation.navigate("Home");
-            console.log("User found");
-            AsyncStorage.setItem("isLoggedIn", JSON.stringify({...userData, isLoggedIn: true}));
-          } else {
-            console.log("Invalid email or password");
-            Dialog.show({
-              type: ALERT_TYPE.DANGER,
-              title: 'Error',
-              textBody: "Invalid email or password",
-              button: 'close',
-            })
-          }
-        } else {
-          console.log("User not found");
-          Dialog.show({
-            type: ALERT_TYPE.DANGER,
-            title: 'Error',
-            textBody: "User not found",
-            button: 'close',
-          })
-        }
-      } catch (error) {
-        Dialog.show({
-          type: ALERT_TYPE.DANGER,
-          title: 'Error',
-          textBody: error,
-          button: 'close',
-        })
-      }
-    }, 3000);
   };
 
   return (
-    <AlertNotificationRoot style={styles.container}>
+    <AlertNotificationRoot>
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.Title}>Welcome Back</Text>
           <Text style={styles.Subtitle}>Enter your credentials</Text>
         </View>
 
-        <Loader visible={loading} />
-
         <View style={styles.inputContainer}>
           <Input
             label="Email Address"
             iconName="envelope"
             placeholder="Email Address"
-            onChangeText={text => handleOnChange(text, "email")}
-            onFocus={() => handleError(null, "email")}
-            error={errors.email}
+            value={email}
+            onChangeText={setEmail}
+            keyboardType="email-address"
+            autoCapitalize="none"
           />
-          <Input label="Password"
+          <Input
+            label="Password"
             iconName="lock"
             placeholder="Password"
-            onChangeText={text => handleOnChange(text, "password")}
-            onFocus={() => handleError(null, "password")}
-            error={errors.password}
-            password
+            value={password}
+            onChangeText={setPassword}
+            secureTextEntry
+            autoCapitalize="none"
           />
         </View>
 
-        <TouchableOpacity style={styles.loginButton} onPress={validate} activeOpacity={0.8}>
+        <TouchableOpacity style={styles.loginButton} onPress={handleLogin} activeOpacity={0.8}>
           <Text style={styles.loginButtonText}>Sign In</Text>
         </TouchableOpacity>
         <View style={styles.signupContainer}>
@@ -159,8 +83,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "white",
-    // alignItems: "center",
-    // justifyContent: "center",
+    paddingHorizontal: 10,
   },
   header: {
     alignItems: "center",

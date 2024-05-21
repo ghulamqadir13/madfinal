@@ -27,8 +27,8 @@ function HomeScreen({ navigation }) {
   const getUserData = async () => {
     const userData = await AsyncStorage.getItem("userData");
     if (userData) {
-      console.log("Home");
-      console.log(userData);
+      // console.log("Home");
+      // console.log(userData);
       setUserDetails(JSON.parse(userData));
     }
   };
@@ -42,7 +42,6 @@ function HomeScreen({ navigation }) {
   };
   return (
     <SafeAreaView style={styles.container}>
-      {/* <View style={styles.container}> */}
       <View style={styles.topContainer}>
         <View style={styles.logoContainer}>
           <View style={styles.logoImage}>
@@ -69,12 +68,6 @@ function HomeScreen({ navigation }) {
       </View>
       <View style={styles.bottomContainer}>
         <View style={styles.JHContainer}>
-          {/* <View style={styles.JuzzContainer}>
-            <Text></Text>
-          </View>
-          <View style={styles.HadithContainer}>
-            <Text>Hadiths</Text>
-          </View> */}
           <ScrollView style={styles.HadithDisplayContainer}>
             <HadithDisplay />
           </ScrollView>
@@ -104,56 +97,45 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
   },
   topContainer: {
-    flex: 1,
+    flex: .8,
     backgroundColor: "red",
   },
   logoContainer: {
     flex: 0.7,
     flexDirection: "row",
-    backgroundColor: "green",
+    backgroundColor: "#013220",
     marginTop: "8%",
   },
   timerContainer: {
     flex: 1,
     // backgroundColor: "gray",
-    borderRadius: 20,
-    marginTop: "-6%",
-    // marginLeft: "2%",
-    // marginRight: "2%",
-    borderWidth: 2, // Add border width
-    borderColor: "black", // Add border color
-    borderRadius: 10, // Add border radius
+    borderTopEndRadius: 45,
+    borderTopStartRadius: 45,
+    marginTop: "-16%",
+    
+    borderWidth: 5, // Add border width
+    borderColor: "#fff", // Add border color
+    // borderRadius: 50, // Add border radius
   },
-  // savedContainer: {
-  //   flex: 0.75,
-  //   backgroundColor: "yellow",
-  //   borderRadius: 20,
-  //   marginTop: "7%",
-  //   marginLeft: "7%",
-  //   marginRight: "7%",
-  //   marginBottom: "2%",
-  //   borderWidth: 2, // Add border width
-  //   borderColor: "black", // Add border color
-  //   borderRadius: 10, // Add border radius
-  // },
+  
   logoImage: {
-    flex: 3,
+    flex: 2,
   },
   menuContainer: {
     flex: 1,
     marginTop: "9%",
   },
   logo: {
-    width: "40%",
-    height: "65%",
+    width: "25%",
+    height: "55%",
     borderRadius: 50,
-    marginLeft: "5%",
-    marginTop: "6%",
+    marginLeft: "12%",
+    marginTop: "4%",
   },
   menuButton: {
     padding: "10%",
     backgroundColor: "#007bff",
-    color: "#fff",
+    color: "#D3D3D3",
     borderRadius: 5,
   },
   bottomContainer: {
@@ -202,7 +184,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#F0F0F0",
     marginHorizontal: "2%",
     marginVertical: "3%",
-    borderWidth: 2, // Add border width
+    borderWidth: 1, // Add border width
     borderColor: "black", // Add border color
     borderRadius: 10, // Add border radius
   },

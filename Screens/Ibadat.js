@@ -12,8 +12,18 @@ const Ibadat = ({ navigation }) => {
   };
   const onPressNamazaJanaza = () => {
     // Navigate to a new screen passing the edition name as a parameter
-    navigation.navigate("NamazaJanazaScreen");
+    navigation.navigate("NamazJanazaDuaScreen");
   };
+  
+  const onPressHajjDua = () => {
+    // Navigate to a new screen passing the edition name as a parameter
+    navigation.navigate("HajjDuaScreen");
+  };
+  const onPressUmrahDua = () => {
+    // Navigate to a new screen passing the edition name as a parameter
+    navigation.navigate("UmrahDuaScreen");
+  };
+
 
   return (
     <View style={styles.container}>
@@ -26,6 +36,12 @@ const Ibadat = ({ navigation }) => {
       </TouchableOpacity>
       <TouchableOpacity onPress={onPressNamazaJanaza} style={styles.button}>
         <Text style={styles.buttonText}>Namaz e Janaza Guidance</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={onPressHajjDua} style={styles.button}>
+        <Text style={styles.buttonText}>Hajj Dus's</Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={onPressUmrahDua} style={styles.button}>
+        <Text style={styles.buttonText}>Umrah Dus's</Text>
       </TouchableOpacity>
     </View>
   );

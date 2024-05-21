@@ -150,7 +150,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     justifyContent: 'center',
-    backgroundColor: 'yellow',
+    // backgroundColor: 'yellow',
     padding: 20,
   },
   card: {
@@ -158,6 +158,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     paddingBottom: 10,
     paddingTop: 15,
+    marginHorizontal: -10,
     shadowColor: '#000',
     shadowOffset: {
       width: 0,
