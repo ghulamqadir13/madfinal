@@ -1,21 +1,19 @@
-import React from "react";
-import { useState } from "react";
+import React, { useState } from "react";
 import {
   View,
   Text,
   StyleSheet,
   Alert,
   TouchableOpacity,
+  ImageBackground,
 } from "react-native";
-import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
-import Input from "../Components/Input";
-import Loader from "../Components/Loader";
-import { ALERT_TYPE, Dialog, AlertNotificationRoot, Toast } from 'react-native-alert-notification';
 import { SafeAreaView } from "react-native-safe-area-context";
-import { auth } from './Firebase';
+import { FontAwesome5, MaterialIcons } from "@expo/vector-icons"; // Ensure you have these icons installed
+import Input from "../Components/Input";
 import { signInWithEmailAndPassword } from 'firebase/auth';
+import { auth } from './Firebase';
 
-function LoginScreen({ navigation }) {
+const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
@@ -37,7 +35,7 @@ function LoginScreen({ navigation }) {
   };
 
   return (
-    <AlertNotificationRoot>
+    <ImageBackground source={require("../assets/HadithBg.jpg")} style={styles.backgroundImage}>
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.Title}>Welcome Back</Text>
@@ -63,11 +61,24 @@ function LoginScreen({ navigation }) {
             secureTextEntry
             autoCapitalize="none"
           />
+          <TouchableOpacity onPress={() => navigation.navigate('ForgotPassword')} style={styles.forgotPassword}>
+            <Text style={styles.forgotPasswordText}>Forgot Password?</Text>
+          </TouchableOpacity>
         </View>
 
         <TouchableOpacity style={styles.loginButton} onPress={handleLogin} activeOpacity={0.8}>
           <Text style={styles.loginButtonText}>Sign In</Text>
         </TouchableOpacity>
+
+        <View style={styles.socialContainer}>
+          <TouchableOpacity style={[styles.socialButton, styles.fbButton]}>
+            <FontAwesome5 name="facebook-f" size={24} color="white" />
+          </TouchableOpacity>
+          <TouchableOpacity style={[styles.socialButton, styles.googleButton]}>
+            <FontAwesome5 name="google" size={24} color="white" />
+          </TouchableOpacity>
+        </View>
+
         <View style={styles.signupContainer}>
           <Text style={styles.signupText}>Don't have an account?</Text>
           <TouchableOpacity style={styles.signupButton} onPress={signUp}>
@@ -75,14 +86,19 @@ function LoginScreen({ navigation }) {
           </TouchableOpacity>
         </View>
       </SafeAreaView>
-    </AlertNotificationRoot>
+    </ImageBackground>
   );
 };
 
 const styles = StyleSheet.create({
+  backgroundImage: {
+    flex: 1,
+    resizeMode: "cover",
+    justifyContent: "center",
+  },
   container: {
     flex: 1,
-    backgroundColor: "white",
+    backgroundColor: "rgba(0, 0, 0, 0.5)", // Semi-transparent overlay
     paddingHorizontal: 10,
   },
   header: {
@@ -93,12 +109,12 @@ const styles = StyleSheet.create({
   Title: {
     fontSize: 20,
     fontWeight: "bold",
-    color: "black",
+    color: "white",
     paddingTop: 10,
   },
   Subtitle: {
     fontSize: 15,
-    color: "black",
+    color: "white",
     marginTop: 10,
     paddingBottom: 10,
   },
@@ -122,6 +138,25 @@ const styles = StyleSheet.create({
     fontSize: 20,
     alignSelf: "center",
   },
+  socialContainer: {
+    flexDirection: "row",
+    justifyContent: "center",
+    marginTop: 20,
+  },
+  socialButton: {
+    width: 50,
+    height: 50,
+    borderRadius: 25,
+    justifyContent: "center",
+    alignItems: "center",
+    marginHorizontal: 10,
+  },
+  fbButton: {
+    backgroundColor: "#3b5998",
+  },
+  googleButton: {
+    backgroundColor: "#DB4437",
+  },
   signupContainer: {
     flexDirection: "row",
     marginTop: 40,
@@ -129,13 +164,21 @@ const styles = StyleSheet.create({
   },
   signupText: {
     marginRight: 20,
-    color: "black",
+    color: "white",
     fontSize: 15,
   },
   signupButtonText: {
     width: "100%",
-    color: "purple",
+    color: "#6A5ACD",
     fontSize: 15,
+  },
+  forgotPassword: {
+    alignSelf: 'flex-end',
+    marginTop: 10,
+  },
+  forgotPasswordText: {
+    color: 'white',
+    fontSize: 14,
   },
 });
 

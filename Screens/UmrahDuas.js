@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, SafeAreaView } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getDatabase, ref, onValue } from 'firebase/database';
 import app from './Firebase'; // Ensure you have your Firebase app configuration here
 
@@ -22,30 +23,55 @@ const UmrahDuaScreen = () => {
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        const db = getDatabase(app);
-        const dbref = ref(db, "umrah_duas");
-        const unsubscribe = onValue(dbref, (snapshot) => {
-            const data = snapshot.val();
-            if (data) {
-                const orderedData = orderedKeys.map(key => data[key]);
-                setUmrahDuaDetails(orderedData);
+        const loadData = async () => {
+            try {
+                const storedData = await AsyncStorage.getItem('UmrahDuaDetails');
+                if (storedData) {
+                    setUmrahDuaDetails(JSON.parse(storedData));
+                    setLoading(false);
+                } else {
+                    fetchDataFromFirebase();
+                }
+            } catch (error) {
+                console.error("Error loading data", error);
             }
-            setLoading(false);
-        });
+        };
 
-        return () => unsubscribe(); // Clean up the subscription on unmount
+        const fetchDataFromFirebase = () => {
+            const db = getDatabase(app);
+            const dbref = ref(db, "umrah_duas");
+            onValue(dbref, async (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    const orderedData = orderedKeys.map(key => data[key]);
+                    setUmrahDuaDetails(orderedData);
+                    try {
+                        await AsyncStorage.setItem('UmrahDuaDetails', JSON.stringify(orderedData));
+                    } catch (error) {
+                        console.error("Error saving data", error);
+                    }
+                }
+                setLoading(false);
+            });
+        };
+
+        loadData();
     }, []);
 
     if (loading) {
         return (
-            <View style={styles.loadingContainer}>
+            <SafeAreaView style={styles.loadingContainer}>
                 <ActivityIndicator size="large" color="#0000ff" />
-            </View>
+            </SafeAreaView>
         );
     }
 
     return (
-        <View style={styles.container}>
+        <SafeAreaView style={styles.container}>
+            <Text style={styles.header}>Umrah Dua Details</Text>
+            <Text style={styles.description}>
+                Below are the details of Umrah duas, including the prayers in Arabic, their transliteration, and translation.
+            </Text>
             <FlatList
                 data={UmrahDuaDetails}
                 keyExtractor={(item, index) => index.toString()}
@@ -58,7 +84,7 @@ const UmrahDuaScreen = () => {
                     />
                 )}
             />
-        </View>
+        </SafeAreaView>
     );
 };
 
@@ -76,28 +102,52 @@ const DuaItem = ({ title, arabic, transliteration, translation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        marginTop: 50,
+        backgroundColor: 'purple', // Light gray background
+        padding: 20,
+        marginTop: 10,
+    },
+    header: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: '#ffffff', // White text
+        marginTop: 10,
+        marginBottom: 10,
+        textAlign: 'center',
+    },
+    description: {
+        fontSize: 16,
+        color: '#ffffff', // White text
+        marginBottom: 20,
+        textAlign: 'center',
     },
     itemContainer: {
+        backgroundColor: '#6a0dad', // Purple background
         padding: 16,
         borderBottomWidth: 1,
         borderBottomColor: '#ccc',
+        borderRadius: 8,
+        marginVertical: 8,
     },
     title: {
         fontSize: 18,
         fontWeight: 'bold',
+        color: '#ffffff', // White text
+        marginBottom: 10,
     },
     arabic: {
         fontSize: 16,
-        color: '#333',
+        color: '#dcdcdc', // Light gray text
+        marginBottom: 5,
     },
     transliteration: {
         fontSize: 14,
-        color: '#666',
+        fontStyle: 'italic',
+        color: '#ffffff', // White text
+        marginBottom: 5,
     },
     translation: {
         fontSize: 14,
-        color: '#999',
+        color: '#ffffff', // White text
     },
     loadingContainer: {
         flex: 1,

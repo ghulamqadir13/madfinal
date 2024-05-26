@@ -6,40 +6,36 @@ import {
   SafeAreaView,
   Image,
   ScrollView,
+  ImageBackground,
 } from "react-native";
-import React, { useEffect } from "react";
-import { useState } from "react";
+import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Entypo } from "@expo/vector-icons";
-// import { ScrollView } from "react-native-gesture-handler";
 import TimingScreen from "./MovieList";
 import HadithDisplay from "./HadithShow";
-
-// import { ScrollView } from "react-native-gesture-handler";
 
 function HomeScreen({ navigation }) {
   const [userDetails, setUserDetails] = useState();
 
-  React.useEffect(() => {
+  useEffect(() => {
     getUserData();
   }, []);
 
   const getUserData = async () => {
     const userData = await AsyncStorage.getItem("userData");
     if (userData) {
-      // console.log("Home");
-      // console.log(userData);
       setUserDetails(JSON.parse(userData));
     }
   };
+
   const onPressHajj = () => {
-    // Navigate to a new screen passing the edition name as a parameter
-    navigation.navigate('HajjScreen');
+    navigation.navigate("HajjScreen");
   };
+
   const onPressUmrah = () => {
-    // Navigate to a new screen passing the edition name as a parameter
-    navigation.navigate('UmrahScreen');
+    navigation.navigate("UmrahScreen");
   };
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.topContainer}>
@@ -60,7 +56,7 @@ function HomeScreen({ navigation }) {
             </TouchableOpacity>
           </View>
         </View>
-        <View style={{ flex: 1, backgroundColor: "gray" }}>
+        <View style={{ flex: 1, }}>
           <View style={styles.timerContainer}>
             <TimingScreen />
           </View>
@@ -68,25 +64,42 @@ function HomeScreen({ navigation }) {
       </View>
       <View style={styles.bottomContainer}>
         <View style={styles.JHContainer}>
-          <ScrollView style={styles.HadithDisplayContainer}>
-            <HadithDisplay />
-          </ScrollView>
+        <ImageBackground
+            source={require("../assets/HadithBg.jpg")}
+            style={styles.HadithDisplayContainer}
+            blurRadius={4} // Add blur effect here
+          >
+            <ScrollView contentContainerStyle={styles.scrollViewContent}>
+              <HadithDisplay />
+            </ScrollView>
+          </ImageBackground>
         </View>
-        <View style={styles.TafseerTranslationContainer}>
-          <View style={styles.TafseerContainer}>
+        <View style={styles.Gems}>
           <TouchableOpacity onPress={() => onPressUmrah()}>
-          <Text>Umrah Guidance</Text>
+            <Text>Islamic Gems</Text>
+          </TouchableOpacity>
+        </View>
+        <View style={styles.UmrahHajjContainer}>
+          <View style={styles.UmrahContainer}>
+            <TouchableOpacity onPress={onPressUmrah}>
+              <Image
+                source={require("../assets/umrahLogo.jpg")}
+                style={styles.guidanceLogo}
+              />
+              <Text>Umrah Guidance</Text>
             </TouchableOpacity>
-            
           </View>
-          <View style={styles.TranslationContainer}>
-            <TouchableOpacity onPress={() => onPressHajj()}>
+          <View style={styles.HajjContainer}>
+            <TouchableOpacity onPress={onPressHajj}>
+              <Image
+                source={require("../assets/hajjLogo.jpg")}
+                style={styles.guidanceLogo}
+              />
               <Text>Hajj Guidance</Text>
             </TouchableOpacity>
           </View>
         </View>
       </View>
-      {/* </View> */}
     </SafeAreaView>
   );
 }
@@ -94,30 +107,25 @@ function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "purple",
   },
   topContainer: {
-    flex: .8,
-    backgroundColor: "red",
+    flex: 0.8,
   },
   logoContainer: {
     flex: 0.7,
     flexDirection: "row",
-    backgroundColor: "#013220",
+    backgroundColor: "purple",
     marginTop: "8%",
   },
   timerContainer: {
     flex: 1,
-    // backgroundColor: "gray",
     borderTopEndRadius: 45,
     borderTopStartRadius: 45,
     marginTop: "-16%",
-    
-    borderWidth: 5, // Add border width
-    borderColor: "#fff", // Add border color
-    // borderRadius: 50, // Add border radius
+    borderWidth: 5,
+    borderColor: "#fff",
   },
-  
   logoImage: {
     flex: 2,
   },
@@ -140,62 +148,68 @@ const styles = StyleSheet.create({
   },
   bottomContainer: {
     flex: 1,
-    backgroundColor: "green",
+    backgroundColor: "purple",
   },
   JHContainer: {
-    flex: 1,
-    backgroundColor: "pink",
+    flex: 0.8,
+    marginTop: "-3%",
     flexDirection: "row",
   },
-  JuzzContainer: {
-    flex: 1,
-    backgroundColor: "tomato",
-    marginHorizontal: "3%",
-    marginVertical: "8%",
-    borderWidth: 2, // Add border width
-    borderColor: "black", // Add border color
-    borderRadius: 10, // Add border radius
-  },
-  HadithContainer: {
-    flex: 1,
-    backgroundColor: "gray",
-    marginHorizontal: "3%",
-    marginVertical: "8%",
-    borderWidth: 2, // Add border width
-    borderColor: "black", // Add border color
-    borderRadius: 10, // Add border radius
-  },
-  TafseerTranslationContainer: {
-    flex: 1,
-    backgroundColor: "green",
+  UmrahHajjContainer: {
+    flex: 0.8,
+    marginTop: "-6%",
+    backgroundColor: "purple",
     flexDirection: "row",
   },
-  TafseerContainer: {
+  UmrahContainer: {
     flex: 1,
-    backgroundColor: "pink",
+    backgroundColor: "#DDDDDD",
     marginHorizontal: "3%",
     marginVertical: "8%",
-    borderWidth: 2, // Add border width
-    borderColor: "black", // Add border color
-    borderRadius: 10, // Add border radius
+    borderWidth: 2,
+    borderColor: "black",
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  HajjContainer: {
+    flex: 1,
+    backgroundColor: "#DDDDDD",
+    marginHorizontal: "3%",
+    marginVertical: "8%",
+    borderWidth: 2,
+    borderColor: "black",
+    borderRadius: 10,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  guidanceLogo: {
+    width: 80,
+    height: 80,
+    marginBottom: 10,
   },
   HadithDisplayContainer: {
     flex: 1,
-    backgroundColor: "#F0F0F0",
-    marginHorizontal: "2%",
-    marginVertical: "3%",
-    borderWidth: 1, // Add border width
-    borderColor: "black", // Add border color
-    borderRadius: 10, // Add border radius
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 10,
+    resizeMode: "cover",
   },
-  TranslationContainer: {
-    flex: 1,
-    backgroundColor: "yellow",
+  scrollViewContent: {
+    flexGrow: 1,
+    justifyContent: "center",
+    alignItems: "center",
+  },
+  Gems: {
+    flex: 0.2,
+    backgroundColor: "#fff",
+    alignItems: "center",
+    justifyContent: "center",
     marginHorizontal: "3%",
-    marginVertical: "8%",
-    borderWidth: 2, // Add border width
-    borderColor: "black", // Add border color
-    borderRadius: 10, // Add border radius
+    borderWidth: 2,
+    borderColor: "black",
+    borderRadius: 10,
+    marginBottom: "7%",
   },
   drawer: {
     position: "relative",

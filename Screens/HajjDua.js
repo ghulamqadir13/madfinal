@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FlatList, View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import app from "./Firebase"; // Import the functions you need from the SDKs you need
 import { getDatabase, ref, onValue } from "firebase/database";
 
@@ -22,18 +23,40 @@ const HajjDuaScreen = () => {
   ];
 
   useEffect(() => {
-    const db = getDatabase(app);
-    const dbref = ref(db, 'hajj_duas');
-    onValue(dbref, (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-        const orderedData = orderedKeys.map(key => ({
-          key,
-          ...data[key]
-        }));
-        setHajjDuaDetails(orderedData);
+    const loadData = async () => {
+      try {
+        const storedData = await AsyncStorage.getItem('HajjDuaDetails');
+        if (storedData) {
+          setHajjDuaDetails(JSON.parse(storedData));
+        } else {
+          fetchDataFromFirebase();
+        }
+      } catch (error) {
+        console.error("Error loading data", error);
       }
-    });
+    };
+
+    const fetchDataFromFirebase = () => {
+      const db = getDatabase(app);
+      const dbref = ref(db, 'hajj_duas');
+      onValue(dbref, async (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          const orderedData = orderedKeys.map(key => ({
+            key,
+            ...data[key]
+          }));
+          setHajjDuaDetails(orderedData);
+          try {
+            await AsyncStorage.setItem('HajjDuaDetails', JSON.stringify(orderedData));
+          } catch (error) {
+            console.error("Error saving data", error);
+          }
+        }
+      });
+    };
+
+    loadData();
   }, []);
 
   const renderItem = ({ item }) => (
@@ -47,6 +70,10 @@ const HajjDuaScreen = () => {
 
   return (
     <SafeAreaView style={styles.container}>
+      <Text style={styles.header}>Hajj Dua Details</Text>
+      <Text style={styles.description}>
+        Below are the details of Hajj duas, including the prayers in Arabic, their transliteration, and translation.
+      </Text>
       <FlatList
         data={HajjDuaDetails}
         renderItem={renderItem}
@@ -59,10 +86,26 @@ const HajjDuaScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: 'purple', // Light gray background
+    padding: 20,
+    marginTop: 10,
+  },
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginTop: 10,
+    color: '#ffffff', // White text
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  description: {
+    fontSize: 16,
+    color: '#ffffff', // White text
+    marginBottom: 20,
+    textAlign: 'center',
   },
   card: {
-    backgroundColor: '#f9f9f9',
+    backgroundColor: '#6a0dad', // Purple background
     padding: 20,
     marginVertical: 8,
     marginHorizontal: 16,
@@ -72,23 +115,24 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: '#ffffff', // White text
     marginBottom: 10,
   },
   arabic: {
     fontSize: 16,
     fontWeight: 'bold',
-    color: '#2e2e2e',
+    color: '#dcdcdc', // Light gray text
     marginBottom: 5,
   },
   transliteration: {
     fontSize: 14,
     fontStyle: 'italic',
-    color: '#555',
+    color: '#ffffff', // White text
     marginBottom: 5,
   },
   translation: {
     fontSize: 14,
-    color: '#333',
+    color: '#ffffff', // White text
   },
 });
 

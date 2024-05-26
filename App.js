@@ -24,8 +24,7 @@ import FastingScreen from './Screens/Fasting';
 import HajjDuaScreen from './Screens/HajjDua';
 import NamazJanazaDuaScreen from './Screens/NamazaJanaza';
 import UmrahDuaScreen from './Screens/UmrahDuas';
-import LogScreen from './Screens/Log';
-import SignScreen from './Screens/Signup';
+import BookmarksScreen from './Screens/BookmarkScreen';
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
 const Tab = createBottomTabNavigator();
@@ -79,6 +78,7 @@ function HomeDrawer({ navigation }) {
       <Drawer.Screen name="Home" component={HomeContent} options={{ headerShown: false }}/>
       <Drawer.Screen name="Contact" component={ContactScreen} options={{ headerShown: false }}/>
       <Drawer.Screen name="About" component={AboutScreen} options={{ headerShown: false }}/>
+      <Drawer.Screen name="BookMark" component={BookmarksScreen} options={{ headerShown: false }}/>
     </Drawer.Navigator>
   );
 }
@@ -89,10 +89,10 @@ function HomeContent() {
       initialRouteName="Home"
       screenOptions={{
         headerShown: false,
-        tabBarStyle: { backgroundColor: 'pink' },
+        tabBarStyle: { backgroundColor: 'purple' },
         tabBarLabelStyle: { fontWeight: 'bold',fontSize: 16 },
-        tabBarActiveTintColor: 'green',
-        tabBarInactiveTintColor: 'gray',
+        tabBarActiveTintColor: 'gray',
+        tabBarInactiveTintColor: '#fff',
       }}
     >
       <Tab.Screen

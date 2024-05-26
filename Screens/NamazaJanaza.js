@@ -1,24 +1,47 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator } from 'react-native';
+import { View, Text, FlatList, StyleSheet, ActivityIndicator, SafeAreaView } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getDatabase, ref, onValue } from 'firebase/database';
-import  app  from './Firebase'; // Ensure you have your Firebase app configuration here
+import app from './Firebase'; // Ensure you have your Firebase app configuration here
 
 const NamazJanazaDuaScreen = () => {
   const [NamazaJanazaDuaDetails, setNamazaJanazaDuaDetails] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const db = getDatabase(app);
-    const dbref = ref(db, "namaz_e_janaza_duas");
-    const unsubscribe = onValue(dbref, (snapshot) => {
-      const data = snapshot.val();
-      if (data) {
-        setNamazaJanazaDuaDetails(Object.values(data));
+    const loadData = async () => {
+      try {
+        const storedData = await AsyncStorage.getItem('NamazaJanazaDuaDetails');
+        if (storedData) {
+          setNamazaJanazaDuaDetails(JSON.parse(storedData));
+          setLoading(false);
+        } else {
+          fetchDataFromFirebase();
+        }
+      } catch (error) {
+        console.error("Error loading data", error);
       }
-      setLoading(false);
-    });
+    };
 
-    return () => unsubscribe(); // Clean up the subscription on unmount
+    const fetchDataFromFirebase = () => {
+      const db = getDatabase(app);
+      const dbref = ref(db, "namaz_e_janaza_duas");
+      onValue(dbref, async (snapshot) => {
+        const data = snapshot.val();
+        if (data) {
+          const duaDetails = Object.values(data);
+          setNamazaJanazaDuaDetails(duaDetails);
+          try {
+            await AsyncStorage.setItem('NamazaJanazaDuaDetails', JSON.stringify(duaDetails));
+          } catch (error) {
+            console.error("Error saving data", error);
+          }
+        }
+        setLoading(false);
+      });
+    };
+
+    loadData();
   }, []);
 
   const renderItem = ({ item }) => (
@@ -32,20 +55,24 @@ const NamazJanazaDuaScreen = () => {
 
   if (loading) {
     return (
-      <View style={[styles.container, styles.loadingContainer]}>
+      <SafeAreaView style={[styles.container, styles.loadingContainer]}>
         <ActivityIndicator size="large" color="#0000ff" />
-      </View>
+      </SafeAreaView>
     );
   }
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <Text style={styles.header}>Namaz-e-Janaza Dua Details</Text>
+      <Text style={styles.description}>
+        Below are the details of Namaz-e-Janaza duas, including the prayers in Arabic, their transliteration, and translation.
+      </Text>
       <FlatList
         data={NamazaJanazaDuaDetails}
         renderItem={renderItem}
         keyExtractor={(item, index) => index.toString()}
       />
-    </View>
+    </SafeAreaView>
   );
 };
 
@@ -53,38 +80,53 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 20,
-    backgroundColor: '#fff',
+    backgroundColor: 'purple', // Light gray background
+    marginTop: 20,
   },
   loadingContainer: {
     justifyContent: 'center',
     alignItems: 'center',
   },
+  header: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: '#ffffff', // White text
+    marginTop: 10,
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  description: {
+    fontSize: 16,
+    color: '#ffffff', // White text
+    marginBottom: 20,
+    textAlign: 'center',
+  },
   itemContainer: {
+    backgroundColor: '#6a0dad', // Purple background
     marginBottom: 20,
     padding: 15,
-    borderWidth: 1,
-    borderColor: '#ddd',
     borderRadius: 5,
   },
   title: {
     fontSize: 18,
     fontWeight: 'bold',
+    color: '#ffffff', // White text
     marginBottom: 10,
   },
   arabic: {
     fontSize: 16,
-    color: '#2b2b2b',
+    color: '#dcdcdc', // Light gray text
     marginBottom: 10,
   },
   transliteration: {
     fontSize: 14,
     fontStyle: 'italic',
-    color: '#555',
+    color: '#ffffff', // White text
     marginBottom: 10,
   },
   translation: {
     fontSize: 14,
-    color: '#333',
+    color: '#ffffff', // White text
   },
 });
 

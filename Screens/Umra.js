@@ -1,6 +1,7 @@
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, SafeAreaView } from "react-native";
 import React, { useEffect, useState } from "react";
-import app from "./Firebase"; // Import the functions you need from the SDKs you need
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import app from "./Firebase";
 import { getDatabase, ref, onValue } from "firebase/database";
 
 const UmrahScreen = () => {
@@ -8,23 +9,37 @@ const UmrahScreen = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const db = getDatabase(app);
-    const dbref = ref(db, "umrah");
-    console.log("receiving data");
-    onValue(dbref, (snapshot) => {
-      const data = snapshot.val();
-      setUmrahDetails(data);
-      setLoading(false); // Set loading to false after data is fetched
-      // console.log(data);
-    });
-  }, []); // Add an empty dependency array to run the effect only once
+    const fetchUmrahDetails = async () => {
+      try {
+        const cachedUmrahDetails = await AsyncStorage.getItem('UmrahDetails');
+        if (cachedUmrahDetails) {
+          setUmrahDetails(JSON.parse(cachedUmrahDetails));
+          setLoading(false);
+        } else {
+          const db = getDatabase(app);
+          const dbref = ref(db, "umrah");
+          onValue(dbref, (snapshot) => {
+            const data = snapshot.val();
+            setUmrahDetails(data);
+            setLoading(false);
+            AsyncStorage.setItem('UmrahDetails', JSON.stringify(data));
+          });
+        }
+      } catch (error) {
+        console.error("Error fetching Umrah details:", error);
+        setLoading(false);
+      }
+    };
+
+    fetchUmrahDetails();
+  }, []);
 
   const renderItem = ({ item }) => (
-    <View style={styles.stepContainer}>
-      <Text style={styles.stepTitle}>
+    <View style={styles.itemContainer}>
+      <Text style={styles.itemTitle}>
         {item.stepNumber}. {item.title}
       </Text>
-      <Text style={styles.stepDescription}>{item.description}</Text>
+      <Text style={styles.itemDescription}>{item.description}</Text>
       <FlatList
         data={item.actions}
         renderItem={({ item }) => (
@@ -38,7 +53,7 @@ const UmrahScreen = () => {
   if (loading) {
     return (
       <SafeAreaView style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#0000ff" />
+        <ActivityIndicator size="large" color="#FFFFFF" />
       </SafeAreaView>
     );
   }
@@ -46,13 +61,15 @@ const UmrahScreen = () => {
   if (!UmrahDetails) {
     return (
       <SafeAreaView style={styles.loadingContainer}>
-        <Text>Failed to load data</Text>
+        <Text style={styles.errorText}>Failed to load data</Text>
       </SafeAreaView>
     );
   }
 
   return (
     <SafeAreaView style={styles.container}>
+      <Text style={styles.title}>Umrah Guidance</Text>
+      <Text style={styles.subtitle}>Embark on your Umrah journey with confidence and clarity. Discover step-by-step guidance to fulfill this sacred pilgrimage.</Text>
       <FlatList
         data={UmrahDetails.steps}
         renderItem={renderItem}
@@ -97,60 +114,99 @@ const UmrahScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: 'purple',
+    paddingTop: 40,
+    padding: 10,
   },
   loadingContainer: {
     flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  errorText: {
+    color: 'white',
+    fontSize: 16,
+  },
+  title: {
+    fontSize: 24,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 20,
+    textAlign: 'center',
+  },
+  subtitle: {
+    fontSize: 16,
+    color: 'white',
+    marginBottom: 20,
+    textAlign: 'center',
   },
   introductionContainer: {
     padding: 16,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: 'gray',
+    borderRadius: 10,
+    marginBottom: 10,
   },
   introductionTitle: {
     fontSize: 24,
-    fontWeight: "bold",
+    fontWeight: 'bold',
+    color: 'purple',
     marginBottom: 8,
+    textAlign: 'center',
   },
   introductionText: {
     fontSize: 16,
+    color: 'white',
     marginBottom: 8,
   },
-  stepContainer: {
-    padding: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: "#ddd",
+  itemContainer: {
+    backgroundColor: 'gray',
+    padding: 20,
+    borderRadius: 10,
+    marginBottom: 10,
+    shadowColor: 'white',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.3,
+    shadowRadius: 4,
+    elevation: 3,
   },
-  stepTitle: {
-    fontSize: 20,
-    fontWeight: "bold",
-    marginBottom: 8,
+  itemTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'purple',
+    marginBottom: 5,
+    textDecorationLine: 'underline',
   },
-  stepDescription: {
+  itemDescription: {
     fontSize: 16,
-    marginBottom: 8,
+    color: 'white',
   },
   actionItem: {
     fontSize: 16,
+    color: 'white',
     paddingLeft: 16,
   },
   additionalInfoContainer: {
     padding: 16,
-    backgroundColor: "#f5f5f5",
+    backgroundColor: 'gray',
+    borderRadius: 10,
+    marginTop: 10,
   },
   additionalInfoTitle: {
     fontSize: 20,
-    fontWeight: "bold",
+    fontWeight: 'bold',
+    color: 'purple',
     marginBottom: 8,
+    textAlign: 'center',
   },
   subTitle: {
     fontSize: 18,
-    fontWeight: "bold",
+    fontWeight: 'bold',
+    color: 'purple',
     marginBottom: 8,
   },
   additionalInfoText: {
     fontSize: 16,
+    color: 'white',
     marginBottom: 4,
   },
 });
