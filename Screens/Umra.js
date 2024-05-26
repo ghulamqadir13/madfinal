@@ -142,14 +142,14 @@ const styles = StyleSheet.create({
   },
   introductionContainer: {
     padding: 16,
-    backgroundColor: 'gray',
+    backgroundColor: '#6a0dad',
     borderRadius: 10,
     marginBottom: 10,
   },
   introductionTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: 'purple',
+    color: '#ffffff',
     marginBottom: 8,
     textAlign: 'center',
   },
@@ -159,7 +159,7 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   itemContainer: {
-    backgroundColor: 'gray',
+    backgroundColor: '#6a0dad',
     padding: 20,
     borderRadius: 10,
     marginBottom: 10,
@@ -172,7 +172,7 @@ const styles = StyleSheet.create({
   itemTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: 'purple',
+    color: '#ffffff',
     marginBottom: 5,
     textDecorationLine: 'underline',
   },

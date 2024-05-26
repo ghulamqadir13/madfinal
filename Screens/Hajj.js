@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
   },
   itemContainer: {
-    backgroundColor: 'gray',
+    backgroundColor: '#6a0dad',
     padding: 20,
     borderRadius: 10,
     marginBottom: 10,
@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
   itemTitle: {
     fontSize: 18,
     fontWeight: 'bold',
-    color: 'purple',
+    color: 'white',
     marginBottom: 5,
     textDecorationLine: 'underline',
   },
