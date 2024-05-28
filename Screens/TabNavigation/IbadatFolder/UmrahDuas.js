@@ -2,7 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, FlatList, StyleSheet, ActivityIndicator, SafeAreaView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getDatabase, ref, onValue } from 'firebase/database';
-import app from './Firebase'; // Ensure you have your Firebase app configuration here
+import app from '../../FirebaseFolder/Firebase'; // Ensure you have your Firebase app configuration here
+
 
 const orderedKeys = [
     "entering_ihram",

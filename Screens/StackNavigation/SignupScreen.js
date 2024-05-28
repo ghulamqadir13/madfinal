@@ -10,7 +10,7 @@ import {
 } from "react-native";
 import { FontAwesome5, MaterialIcons } from "@expo/vector-icons";
 import { ALERT_TYPE, Dialog, AlertNotificationRoot } from 'react-native-alert-notification';
-import Input from "../Components/Input";
+import Input from "../../Components/Input";
 import { getAuth, createUserWithEmailAndPassword } from 'firebase/auth'; // Import necessary functions from Firebase
 
 function SignupScreen({ navigation }) {
@@ -52,7 +52,7 @@ function SignupScreen({ navigation }) {
   }
 
   return (
-    <ImageBackground source={require("../assets/HadithBg.jpg")} style={styles.backgroundImage}>
+    <ImageBackground source={require("../../assets/HadithBg.jpg")} style={styles.backgroundImage}>
       <SafeAreaView style={styles.container}>
         <AlertNotificationRoot>
           <View style={styles.header}>

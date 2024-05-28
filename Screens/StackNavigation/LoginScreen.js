@@ -9,9 +9,9 @@ import {
 } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { FontAwesome5, MaterialIcons } from "@expo/vector-icons"; // Ensure you have these icons installed
-import Input from "../Components/Input";
+import Input from "../../Components/Input";
 import { signInWithEmailAndPassword } from 'firebase/auth';
-import { auth } from './Firebase';
+import { auth } from '../FirebaseFolder/Firebase';
 
 const LoginScreen = ({ navigation }) => {
   const [email, setEmail] = useState('');
@@ -35,7 +35,7 @@ const LoginScreen = ({ navigation }) => {
   };
 
   return (
-    <ImageBackground source={require("../assets/HadithBg.jpg")} style={styles.backgroundImage}>
+    <ImageBackground source={require("../../assets/HadithBg.jpg")} style={styles.backgroundImage}>
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <Text style={styles.Title}>Welcome Back</Text>
@@ -93,8 +93,10 @@ const LoginScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   backgroundImage: {
     flex: 1,
-    resizeMode: "cover",
     justifyContent: "center",
+    // alignItems: "center",
+    resizeMode: "cover",
+   
   },
   container: {
     flex: 1,

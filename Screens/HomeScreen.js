@@ -11,8 +11,8 @@ import {
 import React, { useEffect, useState } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { Entypo } from "@expo/vector-icons";
-import TimingScreen from "./MovieList";
-import HadithDisplay from "./HadithShow";
+import TimingScreen from "./StackNavigation/prayerTiming";
+import HadithDisplay from "./StackNavigation/HadithShow";
 
 function HomeScreen({ navigation }) {
   const [userDetails, setUserDetails] = useState();

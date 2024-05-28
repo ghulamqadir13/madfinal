@@ -9,7 +9,7 @@ const WelcomeScreen = ({ navigation }) => {
           <Text style={styles.headerTitleText}>بِسْمِ اللهِ الرَّحْمٰنِ الرَّحِيْمِ</Text>
         </View>
         <View style={styles.Imagecontainer}>
-          <Image style={styles.tinyLogo} source={require("../assets/logo/lmage1.png")} />
+          <Image style={styles.tinyLogo} source={require("../../assets/logo/lmage1.png")} />
         </View>
       </View>
       <View style={styles.Bottom}>

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, SafeAreaView, ActivityIndicator } from 'react-native';
 import Swiper from 'react-native-swiper';
-import app from "./Firebase"; // Ensure you have your Firebase app configuration here
+import app from "../../FirebaseFolder/Firebase"; // Ensure you have your Firebase app configuration here
 import { getDatabase, ref, onValue } from "firebase/database";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 

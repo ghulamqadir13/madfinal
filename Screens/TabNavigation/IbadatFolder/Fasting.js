@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { StyleSheet, Text, View, FlatList, SafeAreaView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import app from "./Firebase"; // Import the functions you need from the SDKs you need
+import app from "../../FirebaseFolder/Firebase"; // Import the functions you need from the SDKs you need
 import { getDatabase, ref, onValue } from "firebase/database";
 
 const FastingScreen = () => {

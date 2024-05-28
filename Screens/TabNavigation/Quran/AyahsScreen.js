@@ -10,8 +10,8 @@ const AyahsScreen = ({ navigation, route }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    console.log('Received surah:', surah);
-    console.log('Received initialPage:', initialPage);
+    // console.log('Received surah:', surah);
+    // console.log('Received initialPage:', initialPage);
 
     const fetchSurahDetails = async () => {
       try {
@@ -32,7 +32,7 @@ const AyahsScreen = ({ navigation, route }) => {
 
   useEffect(() => {
     if (!loading && initialPage && scrollViewRef.current) {
-      console.log('Scrolling to initialPage:', initialPage);
+      // console.log('Scrolling to initialPage:', initialPage);
       setTimeout(() => {
         const targetX = screenWidth * (initialPage - 1);
         scrollViewRef.current.scrollTo({ x: targetX, animated: true });

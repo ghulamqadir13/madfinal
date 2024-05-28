@@ -1,20 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, StyleSheet, ActivityIndicator, SafeAreaView } from 'react-native';
+import { FlatList, View, Text, StyleSheet, SafeAreaView } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getDatabase, ref, onValue } from 'firebase/database';
-import app from './Firebase'; // Ensure you have your Firebase app configuration here
+import app from "../../FirebaseFolder/Firebase"; // Import the functions you need from the SDKs you need
+import { getDatabase, ref, onValue } from "firebase/database";
 
-const NamazJanazaDuaScreen = () => {
-  const [NamazaJanazaDuaDetails, setNamazaJanazaDuaDetails] = useState([]);
-  const [loading, setLoading] = useState(true);
+const HajjDuaScreen = () => {
+  const [HajjDuaDetails, setHajjDuaDetails] = useState([]);
+
+  const orderedKeys = [
+    "entering_ihram",
+    "entering_makkah",
+    "seeing_kaaba",
+    "tawaf_start",
+    "between_rukn_yamani_and_black_stone",
+    "after_completing_tawaf",
+    "safa_and_marwah",
+    "standing_at_arafat",
+    "at_muzdalifah",
+    "stoning_jamarat",
+    "sacrifice_animal",
+    "haircut_or_shave"
+  ];
 
   useEffect(() => {
     const loadData = async () => {
       try {
-        const storedData = await AsyncStorage.getItem('NamazaJanazaDuaDetails');
+        const storedData = await AsyncStorage.getItem('HajjDuaDetails');
         if (storedData) {
-          setNamazaJanazaDuaDetails(JSON.parse(storedData));
-          setLoading(false);
+          setHajjDuaDetails(JSON.parse(storedData));
         } else {
           fetchDataFromFirebase();
         }
@@ -25,19 +38,21 @@ const NamazJanazaDuaScreen = () => {
 
     const fetchDataFromFirebase = () => {
       const db = getDatabase(app);
-      const dbref = ref(db, "namaz_e_janaza_duas");
+      const dbref = ref(db, 'hajj_duas');
       onValue(dbref, async (snapshot) => {
         const data = snapshot.val();
         if (data) {
-          const duaDetails = Object.values(data);
-          setNamazaJanazaDuaDetails(duaDetails);
+          const orderedData = orderedKeys.map(key => ({
+            key,
+            ...data[key]
+          }));
+          setHajjDuaDetails(orderedData);
           try {
-            await AsyncStorage.setItem('NamazaJanazaDuaDetails', JSON.stringify(duaDetails));
+            await AsyncStorage.setItem('HajjDuaDetails', JSON.stringify(orderedData));
           } catch (error) {
             console.error("Error saving data", error);
           }
         }
-        setLoading(false);
       });
     };
 
@@ -45,7 +60,7 @@ const NamazJanazaDuaScreen = () => {
   }, []);
 
   const renderItem = ({ item }) => (
-    <View style={styles.itemContainer}>
+    <View style={styles.card}>
       <Text style={styles.title}>{item.title}</Text>
       <Text style={styles.arabic}>{item.arabic}</Text>
       <Text style={styles.transliteration}>{item.transliteration}</Text>
@@ -53,24 +68,16 @@ const NamazJanazaDuaScreen = () => {
     </View>
   );
 
-  if (loading) {
-    return (
-      <SafeAreaView style={[styles.container, styles.loadingContainer]}>
-        <ActivityIndicator size="large" color="#0000ff" />
-      </SafeAreaView>
-    );
-  }
-
   return (
     <SafeAreaView style={styles.container}>
-      <Text style={styles.header}>Namaz-e-Janaza Dua Details</Text>
+      <Text style={styles.header}>Hajj Dua Details</Text>
       <Text style={styles.description}>
-        Below are the details of Namaz-e-Janaza duas, including the prayers in Arabic, their transliteration, and translation.
+        Below are the details of Hajj duas, including the prayers in Arabic, their transliteration, and translation.
       </Text>
       <FlatList
-        data={NamazaJanazaDuaDetails}
+        data={HajjDuaDetails}
         renderItem={renderItem}
-        keyExtractor={(item, index) => index.toString()}
+        keyExtractor={item => item.key}
       />
     </SafeAreaView>
   );
@@ -79,19 +86,15 @@ const NamazJanazaDuaScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    padding: 20,
     backgroundColor: 'purple', // Light gray background
-    marginTop: 20,
-  },
-  loadingContainer: {
-    justifyContent: 'center',
-    alignItems: 'center',
+    padding: 20,
+    marginTop: 10,
   },
   header: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#ffffff', // White text
     marginTop: 10,
+    color: '#ffffff', // White text
     marginBottom: 10,
     textAlign: 'center',
   },
@@ -101,11 +104,13 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     textAlign: 'center',
   },
-  itemContainer: {
+  card: {
     backgroundColor: '#6a0dad', // Purple background
-    marginBottom: 20,
-    padding: 15,
-    borderRadius: 5,
+    padding: 20,
+    marginVertical: 8,
+    marginHorizontal: 16,
+    borderRadius: 8,
+    elevation: 1,
   },
   title: {
     fontSize: 18,
@@ -115,14 +120,15 @@ const styles = StyleSheet.create({
   },
   arabic: {
     fontSize: 16,
+    fontWeight: 'bold',
     color: '#dcdcdc', // Light gray text
-    marginBottom: 10,
+    marginBottom: 5,
   },
   transliteration: {
     fontSize: 14,
     fontStyle: 'italic',
     color: '#ffffff', // White text
-    marginBottom: 10,
+    marginBottom: 5,
   },
   translation: {
     fontSize: 14,
@@ -130,4 +136,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default NamazJanazaDuaScreen;
+export default HajjDuaScreen;

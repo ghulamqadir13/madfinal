@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, SafeAreaView } from "react-native";
 import React, { useEffect, useState } from "react";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import app from "./Firebase";
+import app from "../FirebaseFolder/Firebase";
 import { getDatabase, ref, onValue } from "firebase/database";
 
 const UmrahScreen = () => {
