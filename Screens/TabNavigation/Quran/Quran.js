@@ -1,30 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, FlatList, ActivityIndicator, StyleSheet, TouchableOpacity, TextInput, SafeAreaView } from 'react-native';
+import { View, Text, ScrollView, ActivityIndicator, TextInput, SafeAreaView } from 'react-native';
 import Icon from 'react-native-vector-icons/Ionicons';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import useCustomHook from './useCustomHook';
+import CustomButton from './CustomButton';  // Adjust the import path as necessary
+import styles from './styles';  // Adjust the import path as necessary
 
 const QuranScreen = ({ navigation }) => {
-  const [surahs, setSurahs] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const { data: surahs, loading, error } = useCustomHook('http://api.alquran.cloud/v1/quran/quran-uthmani');
   const [searchQuery, setSearchQuery] = useState('');
   const [filteredSurahs, setFilteredSurahs] = useState([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const response = await fetch('http://api.alquran.cloud/v1/quran/quran-uthmani');
-        const data = await response.json();
-        setSurahs(data.data.surahs);
-        setFilteredSurahs(data.data.surahs); // Set initial filtered surahs
-        setLoading(false);
-      } catch (error) {
-        console.error('Error fetching data:', error);
-        setLoading(false); // Ensure loading state is updated even in case of error
-      }
-    };
-
-    fetchData();
-  }, []);
+    if (surahs.length) {
+      setFilteredSurahs(surahs); // Set initial filtered surahs when data is loaded
+    }
+  }, [surahs]);
 
   useEffect(() => {
     const loadSearchQuery = async () => {
@@ -66,16 +57,6 @@ const QuranScreen = ({ navigation }) => {
     }
   }, [searchQuery, surahs]);
 
-  const renderSurah = ({ item }) => (
-    <TouchableOpacity onPress={() => handleSurahPress(item)} style={styles.surahContainer}>
-      <Text style={styles.surahNumber}>Surah {item.number}</Text>
-      <View style={styles.surahDetails}>
-        <Text style={styles.surahName}>{item.name}</Text>
-        <Text style={styles.englishName}>{item.englishName}</Text>
-      </View>
-    </TouchableOpacity>
-  );
-
   const handleSurahPress = (surah) => {
     navigation.navigate('AyahsScreen', { surah });
   };
@@ -84,6 +65,14 @@ const QuranScreen = ({ navigation }) => {
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#6200EE" />
+      </View>
+    );
+  }
+
+  if (error) {
+    return (
+      <View style={styles.loadingContainer}>
+        <Text style={{ color: 'red' }}>{error}</Text>
       </View>
     );
   }
@@ -100,90 +89,19 @@ const QuranScreen = ({ navigation }) => {
             onChangeText={setSearchQuery}
           />
         </View>
-        <FlatList
-          data={filteredSurahs}
-          renderItem={renderSurah}
-          keyExtractor={(item) => item.number.toString()}
-        />
+        <ScrollView>
+          {filteredSurahs.map((surah) => (
+            <CustomButton
+              key={surah.number.toString()}
+              onPress={() => handleSurahPress(surah)}
+              title={`Surah ${surah.number} - ${surah.name} (${surah.englishName})`}
+              style={{ backgroundColor: 'gray' }}  // Override style if needed
+            />
+          ))}
+        </ScrollView>
       </View>
     </SafeAreaView>
   );
 };
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: 'purple', 
-    paddingTop: 20,
-  },
-  innerContainer: {
-    flex: 1,
-    padding: 15,
-    justifyContent: 'center',
-  },
-  searchContainer: {
-    marginTop: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: 'gray',
-    height: 60,
-    borderRadius: 25,
-    paddingHorizontal: 15,
-    paddingVertical: 10,
-    marginBottom: 20,
-    shadowColor: 'white',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 5,
-    elevation: 2,
-  },
-  searchIcon: {
-    marginRight: 10,
-  },
-  searchInput: {
-    flex: 1,
-    fontSize: 16,
-    color: '#333', 
-  },
-  surahContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 15,
-    borderRadius: 10,
-    marginBottom: 10,
-    backgroundColor: 'gray', 
-    shadowColor: 'white',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.4,
-    shadowRadius: 50,
-    elevation: 2,
-  },
-  surahNumber: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: 'white', 
-    marginRight: 15,
-  },
-  surahDetails: {
-    flex: 1,
-    paddingRight: 10,
-  },
-  surahName: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: 'white', 
-  },
-  englishName: {
-    fontSize: 16,
-    color: 'white', 
-    marginTop: 5,
-    marginLeft: 110,
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-});
 
 export default QuranScreen;
